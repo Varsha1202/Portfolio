@@ -54,7 +54,13 @@
   @media(max-width:640px){.nav-links{display:none}}
 
   /* HERO */
-  header.hero{padding:120px 0 96px}
+  header.hero{
+    position:relative;padding:120px 0 96px;
+    background:
+      radial-gradient(760px 520px at 88% 0%, rgba(58,91,217,.13), rgba(58,91,217,0) 60%),
+      radial-gradient(620px 420px at 6% 12%, rgba(58,91,217,.06), rgba(58,91,217,0) 62%),
+      linear-gradient(180deg, rgba(58,91,217,.05), rgba(250,249,247,0) 58%);
+  }
   .eyebrow{
     display:inline-block;font-size:13px;color:var(--accent);font-weight:500;
     letter-spacing:.02em;margin-bottom:26px;
@@ -218,10 +224,10 @@
     <h1 class="lead reveal">Product decisions, and the evidence behind them.</h1>
     <div class="proof reveal">
       <div><span class="pk">Built</span><span class="pv">TallyRAX — idea to instrumented beta, solo</span></div>
-      <div><span class="pk">Wrote</span><span class="pv">Two product teardowns — Google AI Overview & Linear</span></div>
+      <div><span class="pk">Wrote</span><span class="pv">An AI Overview teardown and a PRD for agentic-AI oversight</span></div>
       <div><span class="pk">Trained</span><span class="pv">Computer Engineering + CDAC PG-DAC</span></div>
     </div>
-    <p class="reveal" style="margin-top:18px;font-size:14px;color:var(--ink-faint)">Open to relocating — Europe &amp; US</p>
+    <p class="reveal" style="margin-top:18px;font-size:14px;color:var(--ink-faint)">Open to relocation and remote roles</p>
     <div class="hero-cta reveal">
       <a href="#work" class="btn btn-primary">See the work <span>↓</span></a>
       <a href="#contact" class="btn btn-ghost">Get in touch</a>
@@ -234,7 +240,7 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="sec-title">Selected work</span>
-      <span class="sec-note">Three pieces, each covering different ground — discovery, strategy, and execution.</span>
+      <span class="sec-note">Three pieces, each covering different ground — building a product, analyzing one, and specifying a hard product decision.</span>
     </div>
     <div class="cards">
       <a href="#tallyrax" class="card reveal">
@@ -257,14 +263,14 @@
         <span class="go">Read the teardown <span class="arrow">→</span></span>
       </a>
 
-      <a href="#linear" class="card reveal">
+      <a href="#prd" class="card reveal">
         <div>
-          <div class="num">03 — Product teardown</div>
-          <h3>A Linear teardown, turned into a prioritized product roadmap.</h3>
+          <div class="num">03 — Product spec (PRD)</div>
+          <h3>A PRD for detecting when human oversight has quietly decayed.</h3>
         </div>
-        <span class="tag">Strategy · Prioritization</span>
-        <p>What stays valuable to a human once software logs its own work? A teardown that turns analysis into a prioritized, effort-weighted roadmap — and flags exactly which recommendation rests on weaker evidence.</p>
-        <span class="go">Read the teardown <span class="arrow">→</span></span>
+        <span class="tag">Product decisions · AI oversight</span>
+        <p>Agentic coding tools classify actions by risk and escalate the dangerous ones. But a checkpoint that produces real oversight in week one can produce only its appearance by week twelve, once approval has gone reflexive. This spec designs a layer that detects that decay — and names the untested assumption it rests on.</p>
+        <span class="go">Read the spec <span class="arrow">→</span></span>
       </a>
     </div>
   </div>
@@ -420,35 +426,46 @@
   </div>
 </div>
 
-<!-- ================= LINEAR ================= -->
-<div class="case" id="linear">
+<!-- ================= PRD: DECAY-AWARE OVERSIGHT ================= -->
+<div class="case" id="prd">
   <div class="wrap">
     <div class="reveal">
-      <div class="case-kicker">03 · Product teardown · Strategy</div>
-      <h2>Linear: what stays valuable when software logs its own work</h2>
-      <p class="oneline">Linear wins by refusing configurability — betting consistency and speed matter more than flexibility. As automation absorbs manual issue-logging, the question becomes what makes it indispensable to a human at all.</p>
+      <div class="case-kicker">03 · A PRD for Agentic Coding Tools</div>
+      <h2>Designing AI That Knows When to Ask</h2>
+      <p class="oneline">Agentic coding tools treat the line between "ask" and "proceed" as a property of the action. This spec argues it is also a property of the user — and the user moves. A checkpoint policy that produces genuine oversight in week one produces the appearance of oversight by week twelve.</p>
       <div class="meta">
-        <div><span class="k">Lens</span><span class="v">Strategy · Prioritization · Metrics</span></div>
-        <div><span class="k">Method</span><span class="v">Docs, changelog, App Store / G2 review mining</span></div>
-        <div><span class="k">Output</span><span class="v">Effort-weighted roadmap with success metrics</span></div>
+        <div><span class="k">Format</span><span class="v">Self-directed PRD — a design proposal, not a shipped feature</span></div>
+        <div><span class="k">Lens</span><span class="v">Product decisions under uncertainty · trade-off analysis</span></div>
+        <div><span class="k">Grounded in</span><span class="v">Claude Code Auto Mode · mixed-initiative & AI-confidence research · a public user thread</span></div>
       </div>
     </div>
 
     <div class="prose reveal">
-      <p class="callout">The competitors aren't even on the same axis. Jira and Linear compete on execution philosophy (flexible vs. opinionated); GitHub Projects competes on adoption cost; Productboard sits a layer up on strategy. Companies running Productboard <em>and</em> Linear together is itself evidence that this market treats strategy and execution as separate jobs.</p>
+      <p class="callout">Action classifiers ask whether <em>this action</em> is risky. The mixed-initiative literature asks who should hold initiative for <em>this task</em>. Neither asks whether the person receiving the escalation is still reading it. This spec sits on top of action-classification and addresses only that gap — it does not try to rebuild the classifier.</p>
 
-      <h4>What the evidence actually says</h4>
-      <p>Reading across both app stores and G2: the mobile app lags desktop badly (no offline, lost edits), reporting is shallow enough that teams export data externally, and newer capability is increasingly gated behind Enterprise. One counter-signal worth weighing: at least one verified review describes using Linear across engineering <em>and</em> customer success — against the assumption that usage is strictly technical.</p>
+      <h4>The problem: oversight decays, and no design tells decay apart from maturation</h4>
+      <p>Vendor usage data shows auto-approve rates rising from roughly 20% to over 40% as users gain experience, humans making about 70% of planning decisions but only 20% of execution decisions, and a single prompt triggering around 10 agent actions on average — some stretches running past 100 actions between human touchpoints. The honest complication: the source frames this as <em>maturation</em>, not a problem. Both readings fit the same data, and no current design distinguishes them.</p>
+      <p>A small public signal that users feel the difference: in one r/ArtificialIntelligence thread, one user wanted to stay in the driver's seat and catch mistakes before they spiral; another replied that this already exists, citing an interruptible agent; the first answered that a comparable tool moved too fast for them to catch anything. Two users, the same feature set, opposite verdicts — a disagreement about calibration, not capability, which is exactly what a static classifier cannot supply.</p>
+      <p>The failure this produces: a user who approves reflexively is not supervised — yet the system, the audit log, and the user all record the interaction <em>as</em> supervision. That is worse than no checkpoint, because it manufactures a record of oversight that never happened.</p>
 
-      <h4>The recommendations — ranked by effort and impact</h4>
-      <ul>
-        <li><b>Initiative Health Rollups (low effort, high impact).</b> Surfaces data Linear <i>already collects</i> as a single reportable view leaders ask for — the more defensible bet because it strengthens something proven to be used.</li>
-        <li><b>Field-complete, offline mobile (high effort, high impact).</b> The most-repeated complaint; matters more as humans shift to on-the-go review of agent-generated work.</li>
-        <li><b>Agent Activity Ledger (high effort — lower confidence).</b> Logs automated vs. human actions with one-tap verification. I flag this openly: it rests on where Linear is <i>building</i>, not on a documented user complaint. That's a bet on where the pain is heading, not a response to proven demand.</li>
-      </ul>
-      <p>The through-line is evidence discipline: two recommendations grounded in repeated complaints, one honestly labeled as a forward bet — each paired with the metrics that would prove or kill it.</p>
-      <h4>The biggest unknown</h4>
-      <p>The Agent Activity Ledger is the recommendation I'm least sure of, and I'd validate it before anyone built a thing. The next step isn't design — it's evidence: talk to teams already using Linear's agent features and find out whether "I can't tell what the automation did" is a real, spoken pain or a trend I'm projecting onto them. If the pain isn't there yet, the ledger waits.</p>
+      <h4>Four product decisions — each named with the trade-off it accepts</h4>
+    </div>
+
+    <div class="decisions reveal">
+      <div><div class="dnum">Decision 01</div><div class="dtxt">The approval threshold is a function of user state, not action class alone.</div><div class="ddesc">The classifier decides what could warrant a stop; this layer decides whether a stop will actually be read. Trade-off: it now models the user — inference people resent when it's wrong and don't notice when it's right, justified only by the tail.</div></div>
+      <div><div class="dnum">Decision 02</div><div class="dtxt">Detect decay from approval latency, not approval rate.</div><div class="ddesc">A high approval rate fits both a good classifier and a user who stopped reading; latency disambiguates. Trade-off: latency is noisy — and whether it correlates with review at all is the spec's load-bearing, untested assumption.</div></div>
+      <div><div class="dnum">Decision 03</div><div class="dtxt">Respond to decay by re-earning attention, not adding checkpoints.</div><div class="ddesc">More stops for an inattentive user accelerate the decay; instead the next high-consequence stop gets heavier — the diff, the specific ambiguity, a substantive input. Trade-off: fewer, heavier interruptions concentrate risk on picking the right stop.</div></div>
+      <div><div class="dnum">Decision 04</div><div class="dtxt">Express confidence behaviorally, never numerically.</div><div class="ddesc">Low confidence narrows scope and asks, rather than showing a percentage; research shows miscalibrated numeric confidence degrades reliance and users can't detect it. Trade-off: users who want to set a numeric threshold can't.</div></div>
+    </div>
+
+    <div class="prose reveal">
+      <h4>How it would be judged</h4>
+      <p>North-star metric: reverted agent commits — a direct proxy for errors that escaped review. Guardrail: the approval-latency distribution over tenure, which is the decay curve this layer exists to flatten. Counter-metric: time-to-completion, which rises if the layer over-fires. Diagnostic: the disable rate — users switching it off is the cleanest possible verdict. Latency and completion time have to be read together, since either alone can be moved by pushing the threshold one way.</p>
+      <p>The honest evaluation problem: the only direct test of whether someone is reviewing is an in-session probe that injects a detectable discrepancy and checks whether they catch it — which means deliberately showing users something wrong. That tension is real, I have not resolved it, and I would not ship the probe without a resolution.</p>
+
+      <h4>What I'd validate first — and the limits of the evidence</h4>
+      <p>The load-bearing open question is whether approval latency correlates with review at all; Decision 02 depends on it entirely and it is untested. The second is whether rising auto-approve rates are decay or earned trust — the design's value depends on which dominates, and the published data doesn't separate them (resolvable by correlating auto-approve rate against downstream revert rate).</p>
+      <p><em>Evidence limitations, stated plainly: the user signal is four public comments from a single thread — enough to establish that the tension exists, not to size it. The decay data is vendor-published, not independent measurement. No primary user research was conducted for this spec.</em></p>
     </div>
   </div>
 </div>
@@ -463,7 +480,7 @@
     <div class="howgrid">
       <div class="reveal"><div class="hn">01</div><h4>Cut scope before adding it</h4><p>The first real decision on TallyRAX wasn't a feature — it was removing a user. A product is easier to trust when it can point to what it deliberately leaves out.</p></div>
       <div class="reveal"><div class="hn">02</div><h4>Validate the behavior before the technology</h4><p>Rule-based categorization shipped before any AI, because the open question was whether people would log conversationally at all — not how smart the model was.</p></div>
-      <div class="reveal"><div class="hn">03</div><h4>Design for being wrong</h4><p>How gracefully a product recovers from a wrong guess matters as much as getting it right. The correction path is a first-class part of the experience, not an edge case.</p></div>
+      <div class="reveal"><div class="hn">03</div><h4>Match recovery to the cost of the mistake</h4><p>For low-stakes, reversible errors — a mis-categorized transaction in TallyRAX — fast, obvious correction beats chasing perfect accuracy. But recovery only helps when a mistake is reversible and the user notices it. For irreversible or invisible errors, the design job is prevention, not a good undo.</p></div>
       <div class="reveal"><div class="hn">04</div><h4>Separate what's proven from what's reasoned</h4><p>Each claim is marked as evidence or inference. A decision that can be defended is worth more than a number that can't be stood behind.</p></div>
     </div>
   </div>
@@ -474,9 +491,10 @@
   <div class="wrap">
     <div class="sec-head reveal"><span class="sec-title">About</span></div>
     <div class="prose reveal">
-      <h2>How I read a product.</h2>
-      <p>The first question about any product is what constraint it can't escape. Google's AI Overview makes more sense once you see that most of Alphabet's revenue depends on users clicking links; Linear's refusal to add configuration is a deliberate strategy. Find the constraint, and most design choices stop looking like accidents.</p>
-      <p>From there the work is judgment: reading intent instead of feature lists, telling when "add AI" is a real answer or an excuse to dodge a product decision, and pricing the trade-off in every recommendation. A proposal that doesn't name what it costs is a wish, not a plan. The discipline is the same whether a product is being taken apart or built from scratch — which is most of what this work is. The attention tends to go to <strong>AI, fintech, and developer tools</strong>.</p>
+      <h2>An engineer who'd rather decide what to build.</h2>
+      <p>I'm a product-minded engineer — a Computer Engineering degree, CDAC's PG-DAC, and the time since spent building and pulling apart products, because the questions I enjoy are which problem to solve and what to leave out, not just how to implement it.</p>
+      <p>I work best with ambiguous problems and real constraints: narrowing scope, making a call, and being straight about the evidence behind it. My technical background means I can hold my own with engineers without losing the user — and I can tell when "add AI" is a real answer or an excuse to avoid a product decision.</p>
+      <p>I'm looking for an Associate PM or early-stage product role, mostly in <strong>AI, fintech, and developer tools</strong>, and I'm open to relocating.</p>
     </div>
   </div>
 </section>
@@ -485,7 +503,7 @@
 <footer id="contact">
   <div class="wrap">
     <div class="foot-grid reveal">
-      <div class="foot-h">If you're hiring for an APM or early-stage product role, I'd like to talk.</div>
+      <div class="foot-h">Open to Associate PM and early-stage product roles. Let's connect.</div>
       <div class="foot-links">
         <a href="mailto:vsghodase2002@gmail.com">Email</a>
         <a href="https://www.linkedin.com/in/varsha20/" target="_blank" rel="noopener">LinkedIn</a>
