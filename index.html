@@ -303,7 +303,7 @@
     <div class="decisions reveal">
       <div><div class="dnum">Decision 01</div><div class="dtxt">Focused on one customer before expanding.</div><div class="ddesc">Narrowed from three personas to one independent professional to eliminate conflicting requirements and build a more coherent MVP.</div></div>
       <div><div class="dnum">Decision 02</div><div class="dtxt">Kept natural-language input. Removed the chatbot interface.</div><div class="ddesc">Preserved the speed of conversational logging while avoiding a chat experience that distracted from the core task.</div></div>
-      <div><div class="dnum">Decision 03</div><div class="dtxt">Chose deterministic categorization over AI.</div><div class="ddesc">The rule-based parser correctly categorized 96% of common transactions in internal testing. For an MVP handling financial data, reliability mattered more than broader language understanding.</div></div>
+      <div><div class="dnum">Decision 03</div><div class="dtxt">Chose a deterministic parser over a model.</div><div class="ddesc">The rules decide the truth; a model would at most decide the words. Known merchants categorize consistently; unknown ones fall back to a visible "Miscellaneous" rather than a confident wrong guess.</div></div>
       <div><div class="dnum">Decision 04</div><div class="dtxt">Optimized for fast correction over perfect prediction.</div><div class="ddesc">Rather than trying to understand every possible input, the product made corrections quick and used them to improve future parsing rules.</div></div>
     </div>
 
@@ -312,14 +312,16 @@
       <p>People don't lack finance tools. They lack one that survives a normal week. Bank apps show what already happened, weeks late. Spreadsheets demand upkeep no one sustains. Expense trackers front-load the cost — pick a category, choose an account, tag it, confirm — for every ₹40 chai. They ask for accounting behavior from someone who never signed up to be an accountant. The failure isn't motivation; it's that every entry is taxed until the user quietly stops. And once logging stops, every downstream feature sits on data that doesn't exist.</p>
       <p><em>Honest note on evidence: this framing is reasoned from public discussions and the problem itself, not formal user research. The personas below are decision tools, not validated segments.</em></p>
 
-      <h4>The first real decision was cutting a user</h4>
-      <p>"People who struggle with their finances" describes everyone and specifies no one. Three provisional personas — a freelancer, a small-business owner, a shop owner — looked like one problem but weren't. A feature set powerful enough for the business owner would overwhelm the shop owner; every new user type quietly expanded the product until TallyRAX was becoming a smaller version of the tools it meant to replace. So the first move wasn't adding a feature. <strong>It was cutting the business owner as a user</strong> — and the problem statement moved with her, from "people need better bookkeeping" to "people need a lower-effort way to stay aware."</p>
+      <h4>Narrowing to one user</h4>
+      <p>"People who struggle with their finances" describes everyone and specifies no one. Three personas anchored the early thinking — Arjun, a freelancer; Neha, a D2C founder; and Suresh, a repair-shop owner. They looked like one problem but weren't: Suresh's world is cash-heavy, customer-facing, and inventory-bound, and Neha's needs diverged just as fast. Serving all three would have pushed the MVP well past what one person could build and validate. So both Neha and Suresh were cut and kept as future expansion — the product narrowed to Arjun and freelancers, and the problem statement moved with him, from "people need better bookkeeping" to "people need a lower-effort way to stay aware."</p>
 
       <h4>Why it didn't become a chatbot</h4>
       <p>The earliest model was a conversational assistant. On paper, the lowest-friction version. Mapping the full flow broke it: chat is optimized for conversation, but financial records are optimized for correction, scanning, and trust — none of which a chat log does well. A single wrong transaction buried in a thread raised questions the model couldn't answer cleanly. <strong>Natural-language input survived; the conversation interface didn't.</strong></p>
 
       <h4>Building intelligence without making AI the product</h4>
-      <p>A creative answer is useful in conversation and dangerous when categorizing someone's money. So instead of sending every transaction to a model, TallyRAX runs a local, rule-based pipeline first — and only leans on automation where confidence is high.</p>
+      <p>Categorization wasn't the part of the experience that needed AI. For common transactions — "Swiggy 240", "Uber 180" — the merchant name already carries a strong signal, which makes this a deterministic problem before it's an AI one. The risk of reaching for a model wasn't hallucination; it was adding unpredictability to a workflow where users expect the system to behave the same way, for a reason they can see.</p>
+      <p>The distinction that mattered: <strong>user-initiated variance is learning; system-initiated variance is unreliability.</strong> When a user corrects "Swiggy" to Subscription and it sticks, that's the product working — the change has a reason they can point to. When the same input quietly lands in a different category for no reason they can trace, that's the product failing. Put plainly: the rules decide the truth; a model would, at most, decide the words.</p>
+      <p>There's no hidden second tier behind this. Known merchants are categorized by rule; an unrecognized one falls back to <strong>Miscellaneous</strong> for the user to categorize. That's a deliberately <em>visible</em> failure chosen over a silent one — a wrong model guess is invisible, propagates, and quietly corrupts the totals a user later makes decisions from, while Miscellaneous is loud and self-correcting. The cost is real and worth naming: that fallback drops the user back into the category-picking the product exists to remove, and for the Indian long tail — the kirana store, the auto driver, "gave Anil 500" — that's a meaningful share of transactions. It's the sharpest thing this MVP hasn't solved.</p>
     </div>
 
     <!-- REAL PIPELINE DIAGRAM -->
@@ -329,15 +331,17 @@
       <div class="row"><span class="stage">Merchant recognition</span> <span class="a">→</span> Swiggy detected</div>
       <div class="row"><span class="stage">Category mapping</span> <span class="a">→</span> Food</div>
       <div class="row"><span class="stage">Transaction created</span> <span class="a">→</span> saved instantly</div>
-      <div class="row" style="border-top:1px solid var(--line);margin-top:8px;padding-top:12px"><span class="stage">User corrects</span> <span class="a">→</span> Food → Subscription · <b>and it sticks next time</b></div>
+      <div class="row" style="border-top:1px solid var(--line);margin-top:8px;padding-top:12px"><span class="stage">Unknown merchant</span> <span class="a">→</span> Miscellaneous · <b>user categorizes (a visible fallback)</b></div>
+      <div class="row"><span class="stage">User corrects</span> <span class="a">→</span> Food → Subscription · <b>and it sticks next time</b></div>
     </div>
 
     <div class="prose reveal">
       <p class="callout">Ambiguity is handled by correction, not prediction. "Coursera 799" might be education for one person and a subscription for another. Rather than guess perfectly, the app saves immediately, makes the fix lightweight — and each correction becomes a future rule. The product gets more personal through use, not more complicated up front.</p>
 
       <h4>The failure that was worth having</h4>
-      <p>The first external beta appeared to work: transactions logged, and the app felt functional. The real problem surfaced only later — a release configuration error had stopped production data from reaching the backend. The app had been validated; the release itself hadn't.</p>
-      <p>The lesson wasn't technical. A working feature is only valuable if it produces trustworthy user feedback. Every release afterward followed one checklist: deploy, verify production data, then recruit testers. Shipping code and shipping a product are not the same thing.</p>
+      <p>The insights engine first ranked spending categories by transaction count — then stated it in a way that implied spend. Food came out ahead of rent by roughly 50x: arithmetically correct, because lunch is daily and rent is monthly, and completely wrong as a claim about where the money went. The bug wasn't the arithmetic; it was a number carrying a meaning its denominator never established.</p>
+      <p>The fix wasn't a patch, it was a rule: every financial claim is now computed from the metric it actually represents, never a proxy like count. The lesson generalized past the incident — <strong>a correct calculation can still produce a misleading product</strong> — and it's the same failure I later spent a teardown on: a system presenting more authority than its computation had earned. I've now found it from both sides, as the builder and as the analyst.</p>
+      <p>A smaller, sharper lesson came from the first external beta: it looked functional, but a release-config error meant production data never reached the backend — the app was validated, the release wasn't. Shipping code and shipping a product are not the same thing.</p>
     </div>
 
     <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:30px 0">
@@ -407,7 +411,7 @@
       <p>~$237B of Alphabet's revenue depends on users clicking links. An answer engine that completes the task without a click is in structural conflict with the model that funds it. Every design choice — what AI Overview triggers on, what it signals, what happens when it's wrong — happens inside that constraint. Naming it first is what separates a critique from a PM recommendation.</p>
 
       <h4>The core failure: felt trust vs. earned trust</h4>
-      <p>Citations look like they solve the trust problem. They don't — roughly <strong>1% of users click them</strong>. They create the appearance of verification without the function, outsourcing the work to users who behaviorally aren't doing it. Google already proves it <em>can</em> signal uncertainty (health queries get disclaimers and confidence indicators); it applies that capability only where regulatory pressure is visible. I watched AI Overview invent a framework that doesn't exist from a garbled voice query, cite nine sources, and present it with the same authority as a fact.</p>
+      <p>Citations look like they solve the trust problem. They don't — roughly <strong>1% of users click them</strong>. They create the appearance of verification without the function, outsourcing the work to users who behaviorally aren't doing it. Google already proves it <em>can</em> signal uncertainty (health queries get disclaimers and confidence indicators); it applies that capability only where regulatory pressure is visible. I watched AI Overview invent a framework that doesn't exist from a garbled voice query, cite nine sources, and present it with the same authority as a fact. I've shipped this failure from the other side — an insights feature that stated a transaction count as if it were spend — which is why I read it as a design problem, not a modeling one.</p>
 
       <h4>The measurement trap</h4>
       <p>Google's stated success signal — did users engage with the Overview — <strong>cannot distinguish a satisfied user from one who read it, found it insufficient, and scrolled past.</strong> A trigger system optimized on that signal will never self-correct for its biggest misfire: exploration-seeking queries that need breadth, not a single synthesized answer.</p>
@@ -478,7 +482,7 @@
       <span class="sec-note">Four habits that show up across the work — drawn from the projects, not from a framework.</span>
     </div>
     <div class="howgrid">
-      <div class="reveal"><div class="hn">01</div><h4>Cut scope before adding it</h4><p>The first real decision on TallyRAX wasn't a feature — it was removing a user. A product is easier to trust when it can point to what it deliberately leaves out.</p></div>
+      <div class="reveal"><div class="hn">01</div><h4>Cut scope before adding it</h4><p>On TallyRAX, the hardest early call wasn't a feature — it was cutting two of three personas so the MVP stayed coherent. A product is easier to trust when it can point to what it deliberately leaves out.</p></div>
       <div class="reveal"><div class="hn">02</div><h4>Validate the behavior before the technology</h4><p>Rule-based categorization shipped before any AI, because the open question was whether people would log conversationally at all — not how smart the model was.</p></div>
       <div class="reveal"><div class="hn">03</div><h4>Match recovery to the cost of the mistake</h4><p>For low-stakes, reversible errors — a mis-categorized transaction in TallyRAX — fast, obvious correction beats chasing perfect accuracy. But recovery only helps when a mistake is reversible and the user notices it. For irreversible or invisible errors, the design job is prevention, not a good undo.</p></div>
       <div class="reveal"><div class="hn">04</div><h4>Separate what's proven from what's reasoned</h4><p>Each claim is marked as evidence or inference. A decision that can be defended is worth more than a number that can't be stood behind.</p></div>
@@ -493,7 +497,7 @@
     <div class="prose reveal">
       <h2>An engineer who'd rather decide what to build.</h2>
       <p>I'm a product-minded engineer — a Computer Engineering degree, CDAC's PG-DAC, and the time since spent building and pulling apart products, because the questions I enjoy are which problem to solve and what to leave out, not just how to implement it.</p>
-      <p>I work best with ambiguous problems and real constraints: narrowing scope, making a call, and being straight about the evidence behind it. My technical background means I can hold my own with engineers without losing the user — and I can tell when "add AI" is a real answer or an excuse to avoid a product decision.</p>
+      <p>I work best deciding under uncertainty and real product constraints — no users yet, no budget for AI inference, limited solo engineering time, and an MVP I had to ship rather than an ideal one. My technical background lets me hold my own with engineers without losing the user, and I can tell when "add AI" is a real answer or an excuse: on TallyRAX I kept the model out of categorization because deciding what's true about someone's money is a trust problem, not a language one.</p>
       <p>I'm looking for an Associate PM or early-stage product role, mostly in <strong>AI, fintech, and developer tools</strong>, and I'm open to relocating.</p>
     </div>
   </div>
